@@ -2,3 +2,6 @@
 /bazel-*
 .vscode/
 *.whl
+
+.idea/
+input.txt
