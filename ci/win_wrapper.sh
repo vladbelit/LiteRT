@@ -12,7 +12,6 @@ export BAZEL_STARTUP_OPTIONS=
 # shellcheck disable=SC2155
 export NIGHTLY_RELEASE_DATE=$(TZ="America/Los_Angeles" date "+%Y%m%d")
 
-
 DOCKER_PYTHON_VERSION="${DOCKER_PYTHON_VERSION:-3.11}"
 
 export CI_BUILD_PYTHON="C:/python${DOCKER_PYTHON_VERSION}/python.exe"
