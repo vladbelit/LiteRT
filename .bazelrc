@@ -98,6 +98,13 @@ build --incompatible_enforce_config_setting_visibility
 
 # Default options should come above this line.
 
+build:opt --copt=-Wno-sign-compare
+build:opt --host_copt=-Wno-sign-compare
+build:opt --copt=-Wno-c++20-designator
+build:opt --host_copt=-Wno-c++20-designator
+build:opt --copt=-Wno-gnu-inline-cpp-without-extern
+build:opt --host_copt=-Wno-gnu-inline-cpp-without-extern
+
 # Android configs. Bazel needs to have --cpu and --fat_apk_cpu both set to the
 # target CPU to build transient dependencies correctly. See
 # https://docs.bazel.build/versions/master/user-manual.html#flag--fat_apk_cpu
@@ -473,3 +480,24 @@ common --noenable_bzlmod
 # TODO: Migrate for https://github.com/bazelbuild/bazel/issues/7260
 common --noincompatible_enable_cc_toolchain_resolution
 common --noincompatible_enable_android_toolchain_resolution
+
+build:win_clang_base --@com_google_protobuf//:use_dlls=True
+build:win_clang_base --@com_google_absl//absl:use_dlls
+build:win_clang_base --linkopt=/demangle:no --host_linkopt=/demangle:no
+build:win_clang_base --linkopt=/errorlimit:0 --host_linkopt=/errorlimit:0
+build:win_clang_base --copt=/clang:-Weverything
+build:win_clang_base --host_copt=/clang:-Weverything
+build:win_clang_base --compiler=clang-cl
+build:win_clang_base --linkopt=/FORCE:MULTIPLE
+build:win_clang_base --host_linkopt=/FORCE:MULTIPLE
+build:win_clang_base --action_env=PATHEXT=.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC;.PY;.PYW
+test:win_clang_base --linkopt=/FORCE:MULTIPLE
+test:win_clang_base --host_linkopt=/FORCE:MULTIPLE
+test:win_clang_base --build_tests_only --keep_going --test_output=errors --verbose_failures=true --test_summary=short
+
+build:windows_x86_cpu_2022 --config=win_clang_base
+build:windows_x86_cpu_2022 --crosstool_top="//tensorflow/tools/toolchains/win2022/20241118:toolchain"
+build:windows_x86_cpu_2022 --extra_toolchains="//tensorflow/tools/toolchains/win2022/20241118:cc-toolchain-x64_windows-clang-cl"
+build:windows_x86_cpu_2022 --extra_execution_platforms="//tensorflow/tools/toolchains/win2022:windows_ltsc2022_clang"
+build:windows_x86_cpu_2022 --host_platform="//tensorflow/tools/toolchains/win2022:windows_ltsc2022_clang"
+build:windows_x86_cpu_2022 --platforms="//tensorflow/tools/toolchains/win2022:windows_ltsc2022_clang"

@@ -3,12 +3,16 @@ set -ex
 # Run this script under the root directory.
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+# THIS WOULD TYPICALLY GO INTO THE DOCKER SCRIPT, WHICH IS QUITE RIDICULOUS
+export HERMETIC_PYTHON_VERSION=3.12
+
 PYTHON="python3"
 VERSION_SUFFIX=""
 export TENSORFLOW_DIR="./third_party/tensorflow"
 TENSORFLOW_LITE_DIR="./tflite"
 ARCH="x86_64"
-CUSTOM_BAZEL_FLAGS="--config=release_cpu_windows"
+# CUSTOM_BAZEL_FLAGS="--config=release_cpu_windows"
+CUSTOM_BAZEL_FLAGS="--compiler=clang-cl"
 export PACKAGE_VERSION="1.1.2"
 export PROJECT_NAME="ai_edge_litert"
 BUILD_DIR="${TENSORFLOW_LITE_DIR}/gen/litert_pip/python3"
