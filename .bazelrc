@@ -544,6 +544,7 @@ build:use_local_tf --action_env=USE_LOCAL_TF=true
 build:use_local_tf --action_env=TF_LOCAL_SOURCE_PATH
 test:use_local_tf --action_env=USE_LOCAL_TF=true
 test:use_local_tf --action_env=TF_LOCAL_SOURCE_PATH
+<<<<<<< HEAD
 
 build:win_clang --compiler=clang-cl
 build:win_clang --@com_google_protobuf//:use_dlls=True
@@ -556,8 +557,6 @@ build:win_clang --linkopt=/FORCE:MULTIPLE
 build:win_clang --host_linkopt=/FORCE:MULTIPLE
 build:win_clang --action_env=PATHEXT=.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC;.PY;.PYW
 # Test-oriented config
-test:win_clang --linkopt=/FORCE:MULTIPLE
-test:win_clang --host_linkopt=/FORCE:MULTIPLE
 test:win_clang --build_tests_only --keep_going --test_output=errors --verbose_failures=true --test_summary=short
 
 # Flags for tensorflow source rules to use local_repository rather than http_archive.

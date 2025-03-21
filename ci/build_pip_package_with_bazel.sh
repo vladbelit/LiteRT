@@ -51,6 +51,9 @@ case "${TENSORFLOW_TARGET}" in
   windows)
     BAZEL_FLAGS="--copt=/O3 --host_copt=/O3"
     ;;
+  windows)
+    BAZEL_FLAGS="--copt=/O3 --host_copt=/O3"
+    ;;
   *)
     BAZEL_FLAGS="--copt=-O3
       --config=use_local_tf
