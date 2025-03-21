@@ -1,23 +1,14 @@
 #!/usr/bin/env bash
-# Copyright 2024 The AI Edge LiteRT Authors.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-# ==============================================================================
 set -ex
 
 # Run this script under the root directory.
 export TF_LOCAL_SOURCE_PATH=${TF_LOCAL_SOURCE_PATH:-"$(pwd)/third_party/tensorflow"}
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+source "${SCRIPT_DIR}/utils/utils.sh"
+
+HOST_OS="$(get_os)" # linux/macos/windows
 ARCH="$(uname -m)"
 TENSORFLOW_TARGET=${TENSORFLOW_TARGET:-$1}
 if [ "${TENSORFLOW_TARGET}" = "rpi" ]; then
@@ -57,6 +48,9 @@ case "${TENSORFLOW_TARGET}" in
       --config=use_local_tf
       --repo_env=USE_PYWRAP_RULES=True"
     ;;
+  windows)
+    BAZEL_FLAGS="--copt=/O3 --host_copt=/O3"
+    ;;
   *)
     BAZEL_FLAGS="--copt=-O3
       --config=use_local_tf
@@ -68,13 +62,16 @@ if [[ -n "${BAZEL_CONFIG_FLAGS}" ]]; then
   BAZEL_FLAGS="${BAZEL_FLAGS} ${BAZEL_CONFIG_FLAGS}"
 fi
 
-if [ ! -z "${NIGHTLY_RELEASE_DATE}" ]; then
+if [ -n "${NIGHTLY_RELEASE_DATE}" ]; then
   BAZEL_FLAGS="${BAZEL_FLAGS} --//ci/tools/python/wheel:nightly_iso_date=${NIGHTLY_RELEASE_DATE}"
 fi
 
-# Set linkopt for arm64 architecture, and remote_cache for x86_64.
+# Set linkopt for arm64 architecture, remote_cache for x86_64, and compiler for Win.
 case "${ARCH}" in
   x86_64)
+    if [ "${HOST_OS}" = "windows" ]; then
+      BAZEL_FLAGS="${BAZEL_FLAGS} --compiler=clang-cl"
+    fi
     ;;
   arm64)
     BAZEL_FLAGS="${BAZEL_FLAGS} --linkopt="-ld_classic""
@@ -82,7 +79,7 @@ case "${ARCH}" in
   aarch64)
     ;;
   *)
-    echo "Unsupported architecture: ${ARCH}"
+    echo "Unsupported architecture: ${ARCH} on ${HOST_OS}"
     exit 1
     ;;
 esac
@@ -119,5 +116,5 @@ bazel ${BAZEL_STARTUP_OPTIONS} build -c opt --config=monolithic --config=nogcp -
 
 mv bazel-bin/ci/tools/python/vendor_sdk/mediatek/ai_edge_litert_sdk_mediatek*.tar.gz dist/
 
-echo "Output can be found here:"
-find "./dist/"
+echo "Output found here:"
+/usr/bin/find "./dist/"

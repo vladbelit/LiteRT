@@ -109,6 +109,13 @@ build --incompatible_enforce_config_setting_visibility
 
 # Default options should come above this line.
 
+build:opt --copt=-Wno-sign-compare
+build:opt --host_copt=-Wno-sign-compare
+build:opt --copt=-Wno-c++20-designator
+build:opt --host_copt=-Wno-c++20-designator
+build:opt --copt=-Wno-gnu-inline-cpp-without-extern
+build:opt --host_copt=-Wno-gnu-inline-cpp-without-extern
+
 # Android configs. Bazel needs to have --cpu and --fat_apk_cpu both set to the
 # target CPU to build transient dependencies correctly. See
 # https://docs.bazel.build/versions/master/user-manual.html#flag--fat_apk_cpu
@@ -537,3 +544,18 @@ build:use_local_tf --action_env=USE_LOCAL_TF=true
 build:use_local_tf --action_env=TF_LOCAL_SOURCE_PATH
 test:use_local_tf --action_env=USE_LOCAL_TF=true
 test:use_local_tf --action_env=TF_LOCAL_SOURCE_PATH
+
+build:win_clang --compiler=clang-cl
+build:win_clang --@com_google_protobuf//:use_dlls=True
+build:win_clang --@com_google_absl//absl:use_dlls
+build:win_clang --linkopt=/demangle:no --host_linkopt=/demangle:no
+build:win_clang --linkopt=/errorlimit:0 --host_linkopt=/errorlimit:0
+build:win_clang --copt=/clang:-Weverything
+build:win_clang --host_copt=/clang:-Weverything
+build:win_clang --linkopt=/FORCE:MULTIPLE
+build:win_clang --host_linkopt=/FORCE:MULTIPLE
+build:win_clang --action_env=PATHEXT=.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC;.PY;.PYW
+# Test-oriented config
+test:win_clang --linkopt=/FORCE:MULTIPLE
+test:win_clang --host_linkopt=/FORCE:MULTIPLE
+test:win_clang --build_tests_only --keep_going --test_output=errors --verbose_failures=true --test_summary=short
