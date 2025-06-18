@@ -80,7 +80,7 @@ Expected<size_t> Size(absl::string_view path) {
   auto std_path = MakeStdPath(path);
   if (!StdExists(std_path)) {
     return Error(kLiteRtStatusErrorNotFound,
-                 absl::StrFormat("File not found: %s", std_path.c_str()));
+                 absl::StrFormat("File not found: %s", std_path.string()));
   }
   return StdSize(std_path);
 }
@@ -90,14 +90,14 @@ Expected<OwningBufferRef<uint8_t>> LoadBinaryFile(absl::string_view path) {
 
   if (!StdExists(std_path)) {
     return Error(kLiteRtStatusErrorNotFound,
-                 absl::StrFormat("File not found: %s", std_path.c_str()));
+                 absl::StrFormat("File not found: %s", std_path.string()));
   }
 
   OwningBufferRef<uint8_t> buf(StdSize(std_path));
   if (auto status = StdIFRead(std_path, buf.StrData(), buf.Size());
       status != kLiteRtStatusOk) {
     return Error(status,
-                 absl::StrFormat("Failed to read: %s", std_path.c_str()));
+                 absl::StrFormat("Failed to read: %s", std_path.string()));
   }
 
   return buf;
