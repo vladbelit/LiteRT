@@ -17,7 +17,7 @@
 set -ex
 
 function get_os(){
-  _local _host_os="unknown"
+  local _host_os="unknown"
   case "$(uname -s)" in
     Linux*)
       _host_os="linux"
