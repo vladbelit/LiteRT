@@ -559,3 +559,12 @@ build:win_clang --action_env=PATHEXT=.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF
 test:win_clang --linkopt=/FORCE:MULTIPLE
 test:win_clang --host_linkopt=/FORCE:MULTIPLE
 test:win_clang --build_tests_only --keep_going --test_output=errors --verbose_failures=true --test_summary=short
+
+# Flags for tensorflow source rules to use local_repository rather than http_archive.
+# NOTE: due to bazel caching, when switching from http_archive to local_repository,
+# do a bazel clean --expunge --async before building or use the
+# flag --override_repository=org_tensorflow=$TF_LOCAL_SOURCE_PATH
+build:use_local_tf --action_env=USE_LOCAL_TF=true
+build:use_local_tf --action_env=TF_LOCAL_SOURCE_PATH
+test:use_local_tf --action_env=USE_LOCAL_TF=true
+test:use_local_tf --action_env=TF_LOCAL_SOURCE_PATH

@@ -58,6 +58,9 @@ case "${TENSORFLOW_TARGET}" in
     ;;
 esac
 
+BAZEL_COMMON_FLAGS="--config=use_local_tf"
+BAZEL_FLAGS="${BAZEL_FLAGS} ${BAZEL_COMMON_FLAGS}"
+
 if [[ -n "${BAZEL_CONFIG_FLAGS}" ]]; then
   BAZEL_FLAGS="${BAZEL_FLAGS} ${BAZEL_CONFIG_FLAGS}"
 fi
