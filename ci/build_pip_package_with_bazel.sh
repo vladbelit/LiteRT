@@ -2,6 +2,7 @@
 set -ex
 
 # Run this script under the root directory.
+export TF_LOCAL_SOURCE_PATH=${TF_LOCAL_SOURCE_PATH:"$(pwd)/third_party/tensorflow"}
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
@@ -45,6 +46,9 @@ case "${TENSORFLOW_TARGET}" in
     BAZEL_FLAGS="--copt=-O3"
     ;;
 esac
+
+BAZEL_COMMON_FLAGS="--config=use_local_tf"
+BAZEL_FLAGS="${BAZEL_FLAGS} ${BAZEL_COMMON_FLAGS}"
 
 if [[ -n "${BAZEL_CONFIG_FLAGS}" ]]; then
   BAZEL_FLAGS="${BAZEL_FLAGS} ${BAZEL_CONFIG_FLAGS}"

@@ -556,3 +556,12 @@ build:windows_x86_cpu_2022 --extra_toolchains="//tensorflow/tools/toolchains/win
 build:windows_x86_cpu_2022 --extra_execution_platforms="//tensorflow/tools/toolchains/win2022:windows_ltsc2022_clang"
 build:windows_x86_cpu_2022 --host_platform="//tensorflow/tools/toolchains/win2022:windows_ltsc2022_clang"
 build:windows_x86_cpu_2022 --platforms="//tensorflow/tools/toolchains/win2022:windows_ltsc2022_clang"
+
+# Flags for tensorflow source rules to use local_repository rather than http_archive.
+# NOTE: due to bazel caching, when switching from http_archive to local_repository,
+# do a bazel clean --expunge --async before building or use the
+# flag --override_repository=org_tensorflow=$TF_LOCAL_SOURCE_PATH
+build:use_local_tf --action_env=USE_LOCAL_TF=true
+build:use_local_tf --action_env=TF_LOCAL_SOURCE_PATH
+test:use_local_tf --action_env=USE_LOCAL_TF=true
+test:use_local_tf --action_env=TF_LOCAL_SOURCE_PATH
