@@ -14,7 +14,14 @@
 
 #include "litert/tools/dump.h"
 
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || \
+    defined(__NT__) || defined(_WIN64)
+#define LITERT_WINDOWS_OS 1
+#endif
+
+#if !LITERT_WINDOWS_OS
 #include <dlfcn.h>
+#endif
 
 #ifndef __ANDROID__
 #if __has_include(<link.h>)
