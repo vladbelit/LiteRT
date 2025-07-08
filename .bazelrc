@@ -252,11 +252,6 @@ build:linux --copt="-Wno-deprecated-declarations"
 build:linux --copt="-Wno-ignored-attributes"
 build:linux --copt="-Wno-array-bounds"
 
-# Windows-specific Python configuration
-build:windows --repo_env=HERMETIC_PYTHON_VERSION=3.11
-build:windows --action_env=PYTHON_BIN_PATH="C:/Program Files/Python311/python.exe"
-build:windows --python_path="C:/Program Files/Python311/python.exe"
-
 # Add unused-result as an error on Linux.
 build:linux --copt="-Wunused-result"
 build:linux --copt="-Werror=unused-result"
@@ -277,18 +272,48 @@ build:release_cpu_linux --repo_env=TF_SYSROOT="/dt9"
 # Linux ARM64 specific options
 build:linux_arm64 --copt="-mtune=generic" --copt="-march=armv8-a" --copt="-O3"
 
+# Windows + Clang-specific options
+
+build:win_clang --compiler=clang-cl
+build:win_clang --@com_google_protobuf//:use_dlls=True
+build:win_clang --@com_google_absl//absl:use_dlls
+build:win_clang --linkopt=/demangle:no --host_linkopt=/demangle:no
+build:win_clang --linkopt=/errorlimit:0 --host_linkopt=/errorlimit:0
+build:win_clang --copt=/clang:-Weverything
+build:win_clang --host_copt=/clang:-Weverything
+build:win_clang --linkopt=/FORCE:MULTIPLE
+build:win_clang --host_linkopt=/FORCE:MULTIPLE
+build:win_clang --action_env=PATHEXT=.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC;.PY;.PYW
+# Test-oriented config
+test:win_clang --build_tests_only --keep_going --test_output=errors --verbose_failures=true --test_summary=short
+
+# Windows + MSVC-specific options
+
+# Since designated initializer is used extensively e.g., litert_metrics.cc
+build:win_msvc --cxxopt=/std:c++20
+build:win_msvc --host_cxxopt=/std:c++20
+
 # Windows pthreadpool configuration
 # On Windows, set /std:c11 and /experimental:c11atomics for pthreadpool.
-build:windows --conlyopt=/std:c11
-build:windows --host_conlyopt=/std:c11
-build:windows --copt=/experimental:c11atomics
-build:windows --conlyopt=/experimental:c11atomics
-build:windows --host_conlyopt=/experimental:c11atomics
-build:windows --per_file_copt=external/pthreadpool/.*@-std=c11
-build:windows --per_file_copt=external/pthreadpool/_*@/D_CRT_SECURE_NO_WARNINGS
+build:win_msvc --conlyopt=/std:c11
+build:win_msvc --host_conlyopt=/std:c11
+build:win_msvc --copt=/experimental:c11atomics
+build:win_msvc --conlyopt=/experimental:c11atomics
+build:win_msvc --host_conlyopt=/experimental:c11atomics
+build:win_msvc --per_file_copt=external/pthreadpool/.*@-std=c11
+build:win_msvc --per_file_copt=external/pthreadpool/_*@/D_CRT_SECURE_NO_WARNINGS
 
-# Force include MSVC compatibility header for litert files
-build:windows --per_file_copt=external/litert/.*@/FI"C:/BuildTools/LiteRT-LM/msvc_compat.h"
+# Force include MSVC compatibility header for LiteRT files
+build:win_msvc --per_file_copt=external/litert/.*@/FI"C:/BuildTools/LiteRT-LM/msvc_compat.h"
+
+# Windows + MSVC concrete settings for experimental CI with hard-coded paths and
+# variables on top of the generic MSVC config
+build:win_msvc_experimental --config=win_msvc
+build:win_msvc_experimental --repo_env=HERMETIC_PYTHON_VERSION=3.11
+build:win_msvc_experimental --action_env=PYTHON_BIN_PATH="C:/Program Files/Python311/python.exe"
+build:win_msvc_experimental --python_path="C:/Program Files/Python311/python.exe"
+# Use Git Bash for genrules
+build:win_msvc_experimental --shell_executable="C:/Program Files/Git/bin/bash.exe"
 
 
 # On Windows, `__cplusplus` is wrongly defined without this switch
@@ -345,8 +370,8 @@ build:linux --cxxopt=-std=c++17
 build:linux --host_cxxopt=-std=c++17
 build:macos --cxxopt=-std=c++17
 build:macos --host_cxxopt=-std=c++17
-build:windows --cxxopt=/std:c++20
-build:windows --host_cxxopt=/std:c++20
+build:windows --cxxopt=/std:c++17
+build:windows --host_cxxopt=/std:c++17
 
 # On windows, we still link everything into a single DLL.
 build:windows --config=monolithic
@@ -377,9 +402,6 @@ build:windows --host_linkopt=/OPT:ICF
 build:windows --strategy=Genrule=local
 build:windows --genrule_strategy=local
 build:windows --spawn_strategy=local
-
-# Use Git Bash for genrules
-build:windows --shell_executable="C:/Program Files/Git/bin/bash.exe"
 
 # Verbose failure logs when something goes wrong
 build:windows --verbose_failures
@@ -535,29 +557,6 @@ common --noenable_bzlmod
 # TODO: Migrate for https://github.com/bazelbuild/bazel/issues/7260
 common --noincompatible_enable_cc_toolchain_resolution
 common --noincompatible_enable_android_toolchain_resolution
-
-# Flags for tensorflow source rules to use local_repository rather than http_archive.
-# NOTE: due to bazel caching, when switching from http_archive to local_repository,
-# do a bazel clean --expunge --async before building or use the
-# flag --override_repository=org_tensorflow=$TF_LOCAL_SOURCE_PATH
-build:use_local_tf --action_env=USE_LOCAL_TF=true
-build:use_local_tf --action_env=TF_LOCAL_SOURCE_PATH
-test:use_local_tf --action_env=USE_LOCAL_TF=true
-test:use_local_tf --action_env=TF_LOCAL_SOURCE_PATH
-<<<<<<< HEAD
-
-build:win_clang --compiler=clang-cl
-build:win_clang --@com_google_protobuf//:use_dlls=True
-build:win_clang --@com_google_absl//absl:use_dlls
-build:win_clang --linkopt=/demangle:no --host_linkopt=/demangle:no
-build:win_clang --linkopt=/errorlimit:0 --host_linkopt=/errorlimit:0
-build:win_clang --copt=/clang:-Weverything
-build:win_clang --host_copt=/clang:-Weverything
-build:win_clang --linkopt=/FORCE:MULTIPLE
-build:win_clang --host_linkopt=/FORCE:MULTIPLE
-build:win_clang --action_env=PATHEXT=.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC;.PY;.PYW
-# Test-oriented config
-test:win_clang --build_tests_only --keep_going --test_output=errors --verbose_failures=true --test_summary=short
 
 # Flags for tensorflow source rules to use local_repository rather than http_archive.
 # NOTE: due to bazel caching, when switching from http_archive to local_repository,
