@@ -1,14 +1,19 @@
 #!/usr/bin/env bash
 set -ex
 
-# Run this script under the root directory.
-export TF_LOCAL_SOURCE_PATH=${TF_LOCAL_SOURCE_PATH:-"$(pwd)/third_party/tensorflow"}
-
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 source "${SCRIPT_DIR}/utils/utils.sh"
 
 HOST_OS="$(get_os)" # linux/macos/windows
+
+# Run this script under the root directory.
+TF_LOCAL_SOURCE_PATH=${TF_LOCAL_SOURCE_PATH:-"$(pwd)/third_party/tensorflow"}
+if [[ "${HOST_OS}" == windows ]]; then
+  TF_LOCAL_SOURCE_PATH="$(cygpath -m "${TF_LOCAL_SOURCE_PATH}")"
+fi
+export TF_LOCAL_SOURCE_PATH
+
 ARCH="$(uname -m)"
 TENSORFLOW_TARGET=${TENSORFLOW_TARGET:-$1}
 if [ "${TENSORFLOW_TARGET}" = "rpi" ]; then
@@ -45,10 +50,9 @@ case "${TENSORFLOW_TARGET}" in
       --repo_env=USE_PYWRAP_RULES=True"
     ;;
   windows)
-    BAZEL_FLAGS="--copt=/O3 --host_copt=/O3"
-    ;;
-  windows)
-    BAZEL_FLAGS="--copt=/O3 --host_copt=/O3"
+    BAZEL_FLAGS="--copt=/O3 --host_copt=/O3
+      --config=use_local_tf
+      --repo_env=USE_PYWRAP_RULES=True"
     ;;
   *)
     BAZEL_FLAGS="--copt=-O3
