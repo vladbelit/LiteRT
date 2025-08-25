@@ -67,6 +67,7 @@ config_setting(
 cc_library(
     name = "dispatch",
     srcs = select({
+        "@org_tensorflow//tensorflow:windows": ["litert_dispatch.cc"],
         "//conditions:default": ["litert_dispatch.cc"],
     }),
     hdrs = [
