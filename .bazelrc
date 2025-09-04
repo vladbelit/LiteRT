@@ -290,8 +290,6 @@ build:linux_arm64 --copt="-mtune=generic" --copt="-march=armv8-a" --copt="-O3"
 # Windows + Clang-specific options
 
 build:win_clang --compiler=clang-cl
-build:win_clang --@com_google_protobuf//:use_dlls=True
-build:win_clang --@com_google_absl//absl:use_dlls
 build:win_clang --linkopt=/demangle:no --host_linkopt=/demangle:no
 build:win_clang --linkopt=/errorlimit:0 --host_linkopt=/errorlimit:0
 build:win_clang --copt=/clang:-Weverything

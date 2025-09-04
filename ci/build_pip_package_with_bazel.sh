@@ -51,7 +51,7 @@ case "${TENSORFLOW_TARGET}" in
     ;;
   windows)
     BAZEL_FLAGS="--copt=/O3 --host_copt=/O3
-      --config=use_local_tf
+      --config=win_clang
       --repo_env=USE_PYWRAP_RULES=True"
     ;;
   *)
