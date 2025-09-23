@@ -174,7 +174,7 @@ setuptools.setup(
     packages=setuptools.find_packages(exclude=[]),
     package_dir={'': '.'},
     package_data={'': [
-        '*.so', '*.pyd', '**/*_main', '**/*.so',
+        '*.so', '*.pyd', '**/*_main', '**/*.so', '*.dll'
     ]},
     install_requires=[
         'backports.strenum',

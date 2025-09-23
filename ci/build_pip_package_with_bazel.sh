@@ -104,27 +104,33 @@ mkdir -p dist/
 mv bazel-bin/ci/tools/python/wheel/dist/*.whl dist/
 
 echo "Output can be found here:"
-find "./dist/"
+/usr/bin/find "./dist/"
 
-if [ "${TEST_MANYLINUX_COMPLIANCE}" = "true" ]; then
-  echo "Testing manylinux compliance..."
-  bazel ${BAZEL_STARTUP_OPTIONS} test -c opt \
-    ${BAZEL_FLAGS} ${CUSTOM_BAZEL_FLAGS} //ci/tools/python/wheel:manylinux_compliance_test
-fi
+# No manylinux compliance, or SDK building, on Windows
+if [[ "${HOST_OS}" != windows ]]; then
+
+  if [ "${TEST_MANYLINUX_COMPLIANCE}" = "true" ]; then
+    echo "Testing manylinux compliance..."
+    bazel ${BAZEL_STARTUP_OPTIONS} test -c opt \
+      ${BAZEL_FLAGS} ${CUSTOM_BAZEL_FLAGS} //ci/tools/python/wheel:manylinux_compliance_test
+  fi
 
 # Vendor SDKs
 
-## Qualcomm SDK
-bazel ${BAZEL_STARTUP_OPTIONS} build -c opt \
-  ${BAZEL_FLAGS} ${CUSTOM_BAZEL_FLAGS} //ci/tools/python/vendor_sdk/qualcomm:ai_edge_litert_sdk_qualcomm_sdist
 
-mv bazel-bin/ci/tools/python/vendor_sdk/qualcomm/ai_edge_litert_sdk_qualcomm*.tar.gz dist/
+  ## Qualcomm SDK
+  bazel ${BAZEL_STARTUP_OPTIONS} build -c opt \
+    ${BAZEL_FLAGS} ${CUSTOM_BAZEL_FLAGS} //ci/tools/python/vendor_sdk/qualcomm:ai_edge_litert_sdk_qualcomm_sdist
+  
+  mv bazel-bin/ci/tools/python/vendor_sdk/qualcomm/ai_edge_litert_sdk_qualcomm*.tar.gz dist/
+  
+  ## Mediatek SDK
+  bazel ${BAZEL_STARTUP_OPTIONS} build -c opt \
+    ${BAZEL_FLAGS} ${CUSTOM_BAZEL_FLAGS} //ci/tools/python/vendor_sdk/mediatek:ai_edge_litert_sdk_mediatek_sdist
+  
+  mv bazel-bin/ci/tools/python/vendor_sdk/mediatek/ai_edge_litert_sdk_mediatek*.tar.gz dist/
 
-## Mediatek SDK
-bazel ${BAZEL_STARTUP_OPTIONS} build -c opt \
-  ${BAZEL_FLAGS} ${CUSTOM_BAZEL_FLAGS} //ci/tools/python/vendor_sdk/mediatek:ai_edge_litert_sdk_mediatek_sdist
+  echo "Output found here:"
+  /usr/bin/find "./dist/"
 
-mv bazel-bin/ci/tools/python/vendor_sdk/mediatek/ai_edge_litert_sdk_mediatek*.tar.gz dist/
-
-echo "Output found here:"
-/usr/bin/find "./dist/"
+fi

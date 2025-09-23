@@ -289,7 +289,11 @@ build:linux_arm64 --copt="-mtune=generic" --copt="-march=armv8-a" --copt="-O3"
 
 # Windows + Clang-specific options
 
-build:win_clang --compiler=clang-cl
+# Clang toolchain
+build:win_clang --extra_toolchains=@local_config_cc//:cc-toolchain-x64_windows-clang-cl
+build:win_clang --extra_execution_platforms=//ci/toolchains:x64_windows-clang-cl
+
+# Clang opts, etc.
 build:win_clang --linkopt=/demangle:no --host_linkopt=/demangle:no
 build:win_clang --linkopt=/errorlimit:0 --host_linkopt=/errorlimit:0
 build:win_clang --copt=/clang:-Weverything
@@ -297,7 +301,7 @@ build:win_clang --host_copt=/clang:-Weverything
 build:win_clang --linkopt=/FORCE:MULTIPLE
 build:win_clang --host_linkopt=/FORCE:MULTIPLE
 build:win_clang --action_env=PATHEXT=.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC;.PY;.PYW
-# Test-oriented config
+# Clang Test-oriented config
 test:win_clang --build_tests_only --keep_going --test_output=errors --verbose_failures=true --test_summary=short
 
 # Windows + MSVC-specific options

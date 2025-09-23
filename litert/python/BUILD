@@ -13,7 +13,7 @@
 # limitations under the License.
 
 load("@org_tensorflow//tensorflow:strict.default.bzl", "py_strict_library")
-load("@org_tensorflow//tensorflow:tensorflow.default.bzl", "pywrap_binaries", "pywrap_library")
+load("@org_tensorflow//tensorflow:tensorflow.default.bzl", "pywrap_binaries", "pywrap_library", "pywrap_common_library")
 
 package(
     # copybara:uncomment default_applicable_licenses = ["@org_tensorflow//tensorflow:license"],
@@ -30,9 +30,12 @@ py_strict_library(
 )
 
 pywrap_library(
-    name = "pywrap_litert",
+    name = "_pywrap_litert",
     common_lib_def_files_or_filters = {
-        "litert/python/pywrap_litert_common": "//tflite/python:pywrap_tflite_common.json",
+        "litert/python/_pywrap_litert_common": select({
+            "@bazel_tools//src/conditions:windows": ":pywrap_litert_windows.def",
+        "//conditions:default": "//tflite/python:pywrap_tflite_common.json",
+        }),
     },
     common_lib_linkopts = {
         "litert/python/pywrap_litert_common": select({
@@ -56,8 +59,15 @@ pywrap_library(
     ],
 )
 
+pywrap_common_library(
+    name = "pywrap_litert_common",
+    dep = ":_pywrap_litert",
+    filter_name = "_pywrap_litert_common",
+    visibility = ["//visibility:public"],
+)
+
 pywrap_binaries(
     name = "pywrap_litert_binaries",
-    dep = ":pywrap_litert",
+    dep = ":_pywrap_litert",
     visibility = ["//visibility:public"],
 )

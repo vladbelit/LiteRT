@@ -95,6 +95,7 @@ py_wheel(
         ":fixed_pydeps",
         "//litert/c:libLiteRtRuntimeCApi.so",
         "//litert/python:pywrap_litert_binaries",
+        "//litert/python:pywrap_litert_common",
         "//litert/python/litert_wrapper/compiled_model_wrapper:compiled_model",
         "//litert/python/litert_wrapper/tensor_buffer_wrapper:tensor_buffer",
         "//tflite/profiling/proto:profiling_info_py",

@@ -1,0 +1,29 @@
+; Copyright 2025 Google LLC.
+;
+; Licensed under the Apache License, Version 2.0 (the "License");
+; you may not use this file except in compliance with the License.
+; You may obtain a copy of the License at
+;
+;      http://www.apache.org/licenses/LICENSE-2.0
+;
+; Unless required by applicable law or agreed to in writing, software
+; distributed under the License is distributed on an "AS IS" BASIS,
+; WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+; See the License for the specific language governing permissions and
+; limitations under the License.
+
+; This file is manually created by removing all entries and building the wheel on
+; Windows, using `bazel build ... --config=win_clang`.
+; The linker then fails with `undefined symbol` errors, and the missing symbols
+; are manually added, sorted and de-duplicated here as necessary.
+; NOTE: Symbols beginning with `__imp_` should have that prefix removed, e.g.
+; `__imp_??1OpDef@litert@@UEAA@XZ` becomes `??1OpDef@litert@@UEAA@XZ`.
+
+
+EXPORTS
+  ?Convert@tflite@@YAPEAU_object@@PEAU2@00_N0PEBVPyFunctionLibrary@quantization@tensorflow@@@Z
+  ?MlirQuantizeModel@tflite@@YAPEAU_object@@PEAU2@_N1HHH1100110@Z
+  ?MlirSparsifyModel@tflite@@YAPEAU_object@@PEAU2@@Z
+  ?RegisterCustomOpdefs@tflite@@YAPEAU_object@@PEAU2@@Z
+  ?RetrieveCollectedErrors@tflite@@YA?AV?$vector@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@@std@@XZ
+  ?FlatBufferFileToMlir@tflite@@YA?AV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@AEBV23@_N@Z
