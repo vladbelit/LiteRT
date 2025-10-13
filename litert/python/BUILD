@@ -33,7 +33,7 @@ pywrap_library(
     name = "_pywrap_litert",
     common_lib_def_files_or_filters = {
         "litert/python/_pywrap_litert_common": select({
-            "@bazel_tools//src/conditions:windows": ":pywrap_litert_windows.def",
+            "//ci/platforms:is_windows_x64_clang_cl": ":pywrap_litert_windows.def",
         "//conditions:default": "//tflite/python:pywrap_tflite_common.json",
         }),
     },

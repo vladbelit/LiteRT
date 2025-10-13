@@ -51,7 +51,6 @@ case "${TENSORFLOW_TARGET}" in
     ;;
   windows)
     BAZEL_FLAGS="--copt=/O3 --host_copt=/O3
-      --config=win_clang
       --repo_env=USE_PYWRAP_RULES=True"
     ;;
   *)
@@ -76,12 +75,9 @@ if [[ "${USE_LOCAL_TF}" == "true" ]]; then
   BUILD_FLAGS+=("--config=use_local_tf")
 fi
 
-# Set linkopt for arm64 architecture, remote_cache for x86_64, and compiler for Win.
+# Set linkopt for arm64 architecture, remote_cache for x86_64
 case "${ARCH}" in
   x86_64)
-    if [ "${HOST_OS}" = "windows" ]; then
-      BAZEL_FLAGS="${BAZEL_FLAGS} --compiler=clang-cl"
-    fi
     ;;
   arm64)
     BAZEL_FLAGS="${BAZEL_FLAGS} --linkopt="-ld_classic""
