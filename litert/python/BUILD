@@ -30,7 +30,7 @@ py_strict_library(
 )
 
 pywrap_library(
-    name = "_pywrap_litert",
+    name = "pywrap_litert",
     common_lib_def_files_or_filters = {
         "litert/python/pywrap_litert_common": "//tflite/python:pywrap_tflite_common.json",
     },
@@ -56,15 +56,8 @@ pywrap_library(
     ],
 )
 
-pywrap_common_library(
-    name = "pywrap_litert_common",
-    dep = ":_pywrap_litert",
-    filter_name = "_pywrap_litert_common",
-    visibility = ["//visibility:public"],
-)
-
 pywrap_binaries(
     name = "pywrap_litert_binaries",
-    dep = ":_pywrap_litert",
+    dep = ":pywrap_litert",
     visibility = ["//visibility:public"],
 )
