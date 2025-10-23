@@ -93,7 +93,6 @@ py_wheel(
     srcs = [
         ":fixed_protos",
         ":fixed_pydeps",
-        "//litert/c:libLiteRtRuntimeCApi.so",
         "//litert/python:pywrap_litert_binaries",
         "//litert/python:pywrap_litert_common",
         "//litert/python/litert_wrapper/compiled_model_wrapper:compiled_model",
@@ -101,7 +100,10 @@ py_wheel(
         "//tflite/profiling/proto:profiling_info_py",
         "//tflite/python:schema_py",
         "//tflite/python/metrics:metrics_interface",
-    ],
+    ] + select({
+        "@bazel_tools//src/conditions:windows": ["//litert/c:litert_runtime_c_api_dll"],
+        "//conditions:default": ["//litert/c:libLiteRtRuntimeCApi.so"],
+    }),
     nightly_suffix = ":nightly_iso_date",
     package_data = PACKAGE_DATA,
     platform_name = get_wheel_platform_name(),

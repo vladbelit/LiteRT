@@ -5,9 +5,9 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # Simply so that `set -u` doesn't throw
 export TENSORFLOW_TARGET=windows
 export BAZEL_CONFIG_FLAGS=
-export CUSTOM_BAZEL_FLAGS="--config=rbe_win_clang"
+export CUSTOM_BAZEL_FLAGS="--config=win_clang"
 export BAZEL_FLAGS=
-export BAZEL_STARTUP_OPTIONS="--output_user_root='C:/t'"
+export BAZEL_STARTUP_OPTIONS=--output_user_root='C:/b'
 
 # shellcheck disable=SC2155
 export NIGHTLY_RELEASE_DATE=$(TZ="America/Los_Angeles" date "+%Y%m%d")

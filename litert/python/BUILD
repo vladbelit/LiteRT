@@ -32,10 +32,7 @@ py_strict_library(
 pywrap_library(
     name = "_pywrap_litert",
     common_lib_def_files_or_filters = {
-        "litert/python/_pywrap_litert_common": select({
-            "//ci/platforms:is_windows_x64_clang_cl": ":pywrap_litert_windows.def",
-        "//conditions:default": "//tflite/python:pywrap_tflite_common.json",
-        }),
+        "litert/python/pywrap_litert_common": "//tflite/python:pywrap_tflite_common.json",
     },
     common_lib_linkopts = {
         "litert/python/pywrap_litert_common": select({

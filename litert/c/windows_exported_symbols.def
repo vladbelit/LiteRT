@@ -32,6 +32,7 @@ EXPORTS
   LiteRtCreateManagedTensorBuffer
   LiteRtCreateMetrics
   LiteRtCreateModelFromBuffer
+  LiteRtCreateModelFromFile
   LiteRtCreateOptions
   LiteRtCreateRuntimeOptions
   LiteRtCreateTensorBufferFromGlBuffer
